@@ -1,0 +1,1 @@
+# offer-management/project/__init__.py

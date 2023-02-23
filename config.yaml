@@ -1,0 +1,13 @@
+team: CloudBoys
+user-management:
+  folder: user-management
+  port: 3000
+post-management:
+  folder: post-management
+  port: 3001
+offer-management:
+  folder: offer-management
+  port: 3003
+journey-management:
+  folder: journey-management
+  port: 3002

@@ -1,0 +1,21 @@
+# temps
+*/temp*
+*/*/temp*
+temp?
+
+# logs
+logs/
+
+# passwords
+passwords.txt
+
+# git and cache
+.git
+.cache
+
+# markdown and class files
+*.md
+**/*.class
+
+# samplefiles
+*.sample

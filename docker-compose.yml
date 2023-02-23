@@ -1,0 +1,176 @@
+# docker-compose.yml
+
+version: '3.8'
+
+services:
+  users:
+    build:
+      context: ./user-management
+    image: user-management
+    ports:
+      - "3000:3000"
+    environment:
+      PYTHONPATH: /app
+      FLASK_APP: user-management/app.py
+      RUNNING_IN_CONTAINER: "True"
+    # env_file:
+    #   - ./user-management/.env
+    #volumes:
+      #- /user-data/:/app/user_data
+    networks:
+      - user-network
+      - app-network
+    depends_on:
+      - users_db
+
+  users_db:
+    build:
+      context: ./user-management/project/server/db
+    image: users_db
+    environment:
+      POSTGRES_HOST: users_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monitor_users
+      POSTGRES_PORT: 5432
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    #volumes:
+    #  - user-db-data:/var/lib/postgresql/user_db_data
+    networks:
+      - user-network
+
+
+
+  posts:
+    build:
+      context: ./post-management
+    image: post-management
+    ports:
+      - "3001:3001"
+    environment:
+      PYTHONPATH: /app
+      FLASK_APP: post-management/app.py
+      RUNNING_IN_CONTAINER: "True"
+    # env_file:
+    #   - ./post-management/.env
+    networks:
+      - post-network
+      - app-network
+    depends_on:
+      - posts_db
+
+  posts_db:
+    build:
+      context: ./post-management/project/server/db
+    image: posts_db
+    environment:
+      POSTGRES_HOST: posts_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monitor_posts
+      POSTGRES_PORT: 5432
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    networks:
+      - post-network
+
+
+  offers:
+    build:
+      context: ./offer-management
+    image: offer-management
+    ports:
+      - "3003:3003"
+    environment:
+      PYTHONPATH: /app
+      FLASK_APP: offer-management/app.py
+      RUNNING_IN_CONTAINER: "True"
+    # env_file:
+    #   - ./offer-management/.env
+    networks:
+      - offer-network
+      - app-network
+    depends_on:
+      - offers_db
+
+  offers_db:
+    build:
+      context: ./offer-management/project/server/db
+    image: offers_db
+    environment:
+      POSTGRES_HOST: offers_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monitor_offers
+      POSTGRES_PORT: 5432
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    networks:
+      - offer-network
+
+  
+  journeys:
+    build:
+      context: ./journey-management
+    image: journey-management
+    ports:
+      - "3002:3002"
+    environment:
+      PYTHONPATH: /app
+      FLASK_APP: journey-management/app.py
+      RUNNING_IN_CONTAINER: "True"
+    # env_file:
+    #   - ./journey-management/.env
+    networks:
+      - journey-network
+      - app-network
+    depends_on:
+      - journeys_db
+
+  journeys_db:
+    build:
+      context: ./journey-management/project/server/db
+    image: journey_db
+    environment:
+      POSTGRES_HOST: journey_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: monitor_journeys
+      POSTGRES_PORT: 5432
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 5
+    networks:
+      - journey-network
+
+
+#volumes:
+  #user-data:
+  #user-db-data:
+
+networks:
+  user-network:
+  post-network:
+  offer-network:
+  journey-network:
+  app-network:
